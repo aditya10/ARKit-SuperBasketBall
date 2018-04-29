@@ -13,8 +13,6 @@
 		B0CBAFE72095945B0056BEC9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B0CBAFE52095945B0056BEC9 /* Main.storyboard */; };
 		B0CBAFE92095945D0056BEC9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B0CBAFE82095945D0056BEC9 /* Assets.xcassets */; };
 		B0CBAFEC2095945D0056BEC9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B0CBAFEA2095945D0056BEC9 /* LaunchScreen.storyboard */; };
-		B0CBAFF72095945D0056BEC9 /* ARKit_SuperBasketBallTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CBAFF62095945D0056BEC9 /* ARKit_SuperBasketBallTests.swift */; };
-		B0CBB0022095945D0056BEC9 /* ARKit_SuperBasketBallUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CBB0012095945D0056BEC9 /* ARKit_SuperBasketBallUITests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,11 +42,7 @@
 		B0CBAFEB2095945D0056BEC9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B0CBAFED2095945D0056BEC9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B0CBAFF22095945D0056BEC9 /* ARKit-SuperBasketBallTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ARKit-SuperBasketBallTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		B0CBAFF62095945D0056BEC9 /* ARKit_SuperBasketBallTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARKit_SuperBasketBallTests.swift; sourceTree = "<group>"; };
-		B0CBAFF82095945D0056BEC9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B0CBAFFD2095945D0056BEC9 /* ARKit-SuperBasketBallUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ARKit-SuperBasketBallUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		B0CBB0012095945D0056BEC9 /* ARKit_SuperBasketBallUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARKit_SuperBasketBallUITests.swift; sourceTree = "<group>"; };
-		B0CBB0032095945D0056BEC9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,8 +74,6 @@
 			isa = PBXGroup;
 			children = (
 				B0CBAFDE2095945B0056BEC9 /* ARKit-SuperBasketBall */,
-				B0CBAFF52095945D0056BEC9 /* ARKit-SuperBasketBallTests */,
-				B0CBB0002095945D0056BEC9 /* ARKit-SuperBasketBallUITests */,
 				B0CBAFDD2095945B0056BEC9 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -108,24 +100,6 @@
 				B0CBAFED2095945D0056BEC9 /* Info.plist */,
 			);
 			path = "ARKit-SuperBasketBall";
-			sourceTree = "<group>";
-		};
-		B0CBAFF52095945D0056BEC9 /* ARKit-SuperBasketBallTests */ = {
-			isa = PBXGroup;
-			children = (
-				B0CBAFF62095945D0056BEC9 /* ARKit_SuperBasketBallTests.swift */,
-				B0CBAFF82095945D0056BEC9 /* Info.plist */,
-			);
-			path = "ARKit-SuperBasketBallTests";
-			sourceTree = "<group>";
-		};
-		B0CBB0002095945D0056BEC9 /* ARKit-SuperBasketBallUITests */ = {
-			isa = PBXGroup;
-			children = (
-				B0CBB0012095945D0056BEC9 /* ARKit_SuperBasketBallUITests.swift */,
-				B0CBB0032095945D0056BEC9 /* Info.plist */,
-			);
-			path = "ARKit-SuperBasketBallUITests";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -269,7 +243,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B0CBAFF72095945D0056BEC9 /* ARKit_SuperBasketBallTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -277,7 +250,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B0CBB0022095945D0056BEC9 /* ARKit_SuperBasketBallUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
