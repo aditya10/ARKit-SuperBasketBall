@@ -30,6 +30,39 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.scene = scene
         
         addBackboard()
+        
+        registerGesture()
+        
+    }
+    
+    func registerGesture(){
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap))
+        sceneView.addGestureRecognizer(tap)
+    }
+    
+    @objc func handleTap(gr: UIGestureRecognizer){
+       //Access Scene View and its center
+        guard let sceneView = gr.view as? ARSCNView else {return}
+        guard let centerPoint = sceneView.pointOfView else {return}
+        
+        //transform matrix
+        //Orientation, location of camera
+        let cameraTransform = centerPoint.transform
+        let cameraLocation = SCNVector3(x: cameraTransform.m41, y: cameraTransform.m42, z: cameraTransform.m43)
+        let cameraOrientation = SCNVector3(x: -cameraTransform.m31, y: -cameraTransform.m32, z: -cameraTransform.m33)
+        
+        let cameraPos = SCNVector3Make(cameraLocation.x+cameraOrientation.x, cameraLocation.y+cameraOrientation.y, cameraLocation.z+cameraOrientation.z)
+        
+        let ball = SCNSphere(radius: 0.15)
+        let material = SCNMaterial()
+        material.diffuse.contents = UIImage(named: "basketballSkin.png")
+        ball.materials = [material]
+        
+        let ballNode = SCNNode(geometry: ball)
+        ballNode.position = cameraPos
+        
+        sceneView.scene.rootNode.addChildNode(ballNode)
+        
     }
     
     func addBackboard(){
