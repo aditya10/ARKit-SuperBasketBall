@@ -10,7 +10,7 @@ import UIKit
 import SceneKit
 import ARKit
 
-class ViewController: UIViewController, ARSCNViewDelegate {
+class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDelegate {
 
     @IBOutlet var sceneView: ARSCNView!
     
@@ -29,10 +29,42 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // Set the scene to the view
         sceneView.scene = scene
         
-        addBackboard()
+        //ADDED: for contact checking
+        sceneView.scene.physicsWorld.contactDelegate = self
         
+        addBackboard()
+        addGoalHoop()
         registerGesture()
         
+        
+    }
+    
+    func addBackboard(){
+        guard let backboardScn = SCNScene(named: "art.scnassets/hoop.scn") else {
+            return
+        }
+        guard let backboardNode = backboardScn.rootNode.childNode(withName: "backboard", recursively: false) else {
+            return
+        }
+        backboardNode.position = SCNVector3(x: 0, y: 0.5, z: -4)
+        
+        let physicsShape = SCNPhysicsShape(node: backboardNode, options: [SCNPhysicsShape.Option.type: SCNPhysicsShape.ShapeType.concavePolyhedron])
+        let physicsBody = SCNPhysicsBody(type: .static, shape: physicsShape)
+        
+        backboardNode.physicsBody = physicsBody
+        
+        sceneView.scene.rootNode.addChildNode(backboardNode)
+    }
+    
+    func addGoalHoop(){
+        //add invisible hoop to
+        let hoop = SCNNode(geometry: SCNCylinder(radius: 0.3, height: 0.05))
+        hoop.position = SCNVector3(0, 0.68, -3.4)
+        hoop.geometry?.firstMaterial?.diffuse.contents = UIColor.blue //update to UIColor.clear later
+        let hoopBody = SCNPhysicsBody(type: .static, shape: SCNPhysicsShape(node: hoop, options: [SCNPhysicsShape.Option.type: SCNPhysicsShape.ShapeType.concavePolyhedron]))
+        hoop.physicsBody = hoopBody
+        
+        sceneView.scene.rootNode.addChildNode(hoop)
     }
     
     func registerGesture(){
@@ -61,20 +93,25 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let ballNode = SCNNode(geometry: ball)
         ballNode.position = cameraPos
         
+        let physicsShape = SCNPhysicsShape(node: ballNode, options: nil)
+        let physicsBody = SCNPhysicsBody(type: .dynamic, shape: physicsShape)
+        
+        ballNode.physicsBody = physicsBody
+        
+        let forceVector:Float = 8
+        let upwardPush:Float = 3
+        ballNode.physicsBody?.applyForce(SCNVector3(cameraOrientation.x*forceVector, cameraOrientation.y*forceVector+upwardPush, cameraOrientation.z*forceVector), asImpulse: true)
+        
         sceneView.scene.rootNode.addChildNode(ballNode)
         
     }
     
-    func addBackboard(){
-        guard let backboardScn = SCNScene(named: "art.scnassets/hoop.scn") else {
-            return
-        }
-        guard let backboardNode = backboardScn.rootNode.childNode(withName: "backboard", recursively: false) else {
-            return
-        }
-        backboardNode.position = SCNVector3(x: 0, y: 0.5, z: -3)
-        sceneView.scene.rootNode.addChildNode(backboardNode)
+    
+    func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
+        print("contact happened")
     }
+    
+
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
