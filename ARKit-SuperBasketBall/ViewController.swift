@@ -19,8 +19,10 @@ enum BodyType:Int{
 class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDelegate {
 
     @IBOutlet var sceneView: ARSCNView!
+    @IBOutlet weak var basketsLabel: UILabel!
     
     var goalCount:Int = 0
+    var goal:Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -132,12 +134,23 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         
         sceneView.scene.rootNode.addChildNode(ballNode)
         
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0, execute: {
+            self.checkGoals()
+        })
+        
     }
     
+    func checkGoals(){
+        if(goal){
+            goalCount = goalCount+1
+            basketsLabel.text = String(goalCount)
+            goal=false
+        }
+    }
     
     func physicsWorld(_ world: SCNPhysicsWorld, didEnd contact: SCNPhysicsContact) {
         //if((contact.nodeA.physicsBody?.categoryBitMask == BodyType.hoop.rawValue && contact.nodeB.physicsBody?.categoryBitMask == BodyType.ball.rawValue) || (contact.nodeB.physicsBody?.categoryBitMask == BodyType.hoop.rawValue && contact.nodeA.physicsBody?.categoryBitMask == BodyType.ball.rawValue)){
-                goalCount = goalCount+1
+                goal = true
                 print(goalCount)
        // }
     }

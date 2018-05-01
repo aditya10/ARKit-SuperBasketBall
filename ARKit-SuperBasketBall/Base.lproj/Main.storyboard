@@ -21,9 +21,22 @@
                             <arscnView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="esQ-fE-SAM">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                             </arscnView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ke6-DH-drS">
+                                <rect key="frame" x="16" y="587" width="70" height="60"/>
+                                <color key="backgroundColor" red="0.0" green="0.19041956768134716" blue="0.76167827072538863" alpha="0.4024812940140845" colorSpace="custom" customColorSpace="displayP3"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="70" id="FY6-6o-BgO"/>
+                                    <constraint firstAttribute="height" constant="60" id="j8u-Qv-OUY"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="50"/>
+                                <color key="textColor" red="0.93780541159999997" green="0.97641951739999999" blue="0.16411018799999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="Ke6-DH-drS" firstAttribute="leading" secondItem="U6c-zf-Yaa" secondAttribute="leading" constant="16" id="0yv-dh-83C"/>
+                            <constraint firstItem="U6c-zf-Yaa" firstAttribute="bottom" secondItem="Ke6-DH-drS" secondAttribute="bottom" constant="20" id="9M3-9P-gXf"/>
                             <constraint firstItem="esQ-fE-SAM" firstAttribute="top" secondItem="1nh-qI-m0p" secondAttribute="top" id="D0x-ou-BmD"/>
                             <constraint firstItem="esQ-fE-SAM" firstAttribute="bottom" secondItem="U6c-zf-Yaa" secondAttribute="bottom" id="efI-6z-qiO"/>
                             <constraint firstItem="esQ-fE-SAM" firstAttribute="trailing" secondItem="U6c-zf-Yaa" secondAttribute="trailing" id="ezM-mR-t55"/>
@@ -32,6 +45,7 @@
                         <viewLayoutGuide key="safeArea" id="U6c-zf-Yaa"/>
                     </view>
                     <connections>
+                        <outlet property="basketsLabel" destination="Ke6-DH-drS" id="iTM-HG-SuQ"/>
                         <outlet property="sceneView" destination="esQ-fE-SAM" id="1Nu-aM-14q"/>
                     </connections>
                 </viewController>
