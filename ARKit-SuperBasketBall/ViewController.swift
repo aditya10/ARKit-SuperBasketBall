@@ -10,9 +10,17 @@ import UIKit
 import SceneKit
 import ARKit
 
+enum BodyType:Int{
+    case hoop = 1
+    case ball = 2
+    case backboard = 4
+}
+
 class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDelegate {
 
     @IBOutlet var sceneView: ARSCNView!
+    
+    var goalCount:Int = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,7 +39,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         
         //ADDED: for contact checking
         sceneView.scene.physicsWorld.contactDelegate = self
-        
+        sceneView.scene.physicsWorld.timeStep = 1/300
         addBackboard()
         addGoalHoop()
         registerGesture()
@@ -40,30 +48,41 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     }
     
     func addBackboard(){
+        //import backboard asset
         guard let backboardScn = SCNScene(named: "art.scnassets/hoop.scn") else {
             return
         }
+        //The node here is just the backboard, minus the net (see hoop.scn asset)
         guard let backboardNode = backboardScn.rootNode.childNode(withName: "backboard", recursively: false) else {
             return
         }
+        //location of backboard in 3D space
         backboardNode.position = SCNVector3(x: 0, y: 0.5, z: -4)
         
+        //backboard physics
+        //- concavePolyhedron improves the physics body shape around the node. Without it, the ball will not fall through the hoop. It is usually disabled because it takes more processing power.
+        //- .static so that it is not affected by gravity and is fixed to that location.
         let physicsShape = SCNPhysicsShape(node: backboardNode, options: [SCNPhysicsShape.Option.type: SCNPhysicsShape.ShapeType.concavePolyhedron])
         let physicsBody = SCNPhysicsBody(type: .static, shape: physicsShape)
+        physicsBody.categoryBitMask = BodyType.backboard.rawValue
         
         backboardNode.physicsBody = physicsBody
         
+        //add node to scene
         sceneView.scene.rootNode.addChildNode(backboardNode)
     }
     
     func addGoalHoop(){
-        //add invisible hoop to
-        let hoop = SCNNode(geometry: SCNCylinder(radius: 0.3, height: 0.05))
-        hoop.position = SCNVector3(0, 0.68, -3.4)
+        //Goal hoop is used to track number of baskets. It is an invisible cylindrical node with physics to check if the ball touches it (and a goal is recorded)
+        let hoop = SCNNode(geometry: SCNCylinder(radius: 0.2, height: 0.00000001))
+        hoop.position = SCNVector3(0, 0.65, -3.2)
         hoop.geometry?.firstMaterial?.diffuse.contents = UIColor.blue //update to UIColor.clear later
         let hoopBody = SCNPhysicsBody(type: .static, shape: SCNPhysicsShape(node: hoop, options: [SCNPhysicsShape.Option.type: SCNPhysicsShape.ShapeType.concavePolyhedron]))
+        hoopBody.categoryBitMask = BodyType.hoop.rawValue
+        hoopBody.collisionBitMask = 0
+        hoopBody.contactTestBitMask = BodyType.ball.rawValue
+    
         hoop.physicsBody = hoopBody
-        
         sceneView.scene.rootNode.addChildNode(hoop)
     }
     
@@ -95,6 +114,9 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         
         let physicsShape = SCNPhysicsShape(node: ballNode, options: nil)
         let physicsBody = SCNPhysicsBody(type: .dynamic, shape: physicsShape)
+//        physicsBody.categoryBitMask = BodyType.ball.rawValue
+//        physicsBody.collisionBitMask = 1
+        physicsBody.contactTestBitMask = BodyType.hoop.rawValue
         
         ballNode.physicsBody = physicsBody
         
@@ -107,8 +129,11 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     }
     
     
-    func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
-        print("contact happened")
+    func physicsWorld(_ world: SCNPhysicsWorld, didEnd contact: SCNPhysicsContact) {
+        //if((contact.nodeA.physicsBody?.categoryBitMask == BodyType.hoop.rawValue && contact.nodeB.physicsBody?.categoryBitMask == BodyType.ball.rawValue) || (contact.nodeB.physicsBody?.categoryBitMask == BodyType.hoop.rawValue && contact.nodeA.physicsBody?.categoryBitMask == BodyType.ball.rawValue)){
+                goalCount = goalCount+1
+                print(goalCount)
+       // }
     }
     
 
