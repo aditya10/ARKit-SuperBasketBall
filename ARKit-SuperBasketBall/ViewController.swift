@@ -20,8 +20,10 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
 
     @IBOutlet var sceneView: ARSCNView!
     @IBOutlet weak var basketsLabel: UILabel!
+    @IBOutlet weak var highScoreLabel: UILabel!
     
     var goalCount:Int = 0
+    var highScore:Int!
     var goal:Bool = false
     
     override func viewDidLoad() {
@@ -39,6 +41,16 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         // Set the scene to the view
         sceneView.scene = scene
         
+        
+        if let hs = UserDefaults.standard.object(forKey: "highScore") as? Int {
+            highScore = hs
+            highScoreLabel.text = String(highScore)
+        } else {
+            UserDefaults.standard.set(0, forKey: "highScore")
+            highScore = UserDefaults.standard.object(forKey: "highScore") as? Int
+            highScoreLabel.text = String(highScore)
+        }
+        
         //ADDED: for contact checking
         sceneView.scene.physicsWorld.contactDelegate = self
         sceneView.scene.physicsWorld.timeStep = 1/300
@@ -47,6 +59,14 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         registerGesture()
         
         
+    }
+    
+    func updateHighScore(){
+        UserDefaults.standard.set(goalCount, forKey: "highScore")
+        if let hs = UserDefaults.standard.object(forKey: "highScore") as? Int {
+            highScore = hs
+        }
+        highScoreLabel.text = String(highScore)
     }
     
     func addBackboard(){
@@ -145,6 +165,9 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
             goalCount = goalCount+1
             basketsLabel.text = String(goalCount)
             goal=false
+            if(goalCount > highScore){
+                updateHighScore()
+            }
         }
     }
     
