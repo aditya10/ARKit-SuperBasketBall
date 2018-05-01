@@ -74,8 +74,14 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     
     func addGoalHoop(){
         //Goal hoop is used to track number of baskets. It is an invisible cylindrical node with physics to check if the ball touches it (and a goal is recorded)
-        let hoop = SCNNode(geometry: SCNCylinder(radius: 0.2, height: 0.00000001))
-        hoop.position = SCNVector3(0, 0.65, -3.2)
+        guard let hoopScn = SCNScene(named: "art.scnassets/hoop.scn") else {
+            return
+        }
+        //The node here is just the goalHoop, minus the net (see hoop.scn asset)
+        guard let hoop = hoopScn.rootNode.childNode(withName: "plane", recursively: false) else {
+            return
+        }
+        hoop.position = SCNVector3(0, 0.63, -3.6)
         hoop.geometry?.firstMaterial?.diffuse.contents = UIColor.blue //update to UIColor.clear later
         let hoopBody = SCNPhysicsBody(type: .static, shape: SCNPhysicsShape(node: hoop, options: [SCNPhysicsShape.Option.type: SCNPhysicsShape.ShapeType.concavePolyhedron]))
         hoopBody.categoryBitMask = BodyType.hoop.rawValue
