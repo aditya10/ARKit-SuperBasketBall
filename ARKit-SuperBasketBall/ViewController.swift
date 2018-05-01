@@ -41,7 +41,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         // Set the scene to the view
         sceneView.scene = scene
         
-        
+        //Initial setup for user defaults - stores high score for each user permanenetly.
         if let hs = UserDefaults.standard.object(forKey: "highScore") as? Int {
             highScore = hs
             highScoreLabel.text = String(highScore)
@@ -62,6 +62,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     }
     
     func updateHighScore(){
+        //updates high score when goalCount>highScore
         UserDefaults.standard.set(goalCount, forKey: "highScore")
         if let hs = UserDefaults.standard.object(forKey: "highScore") as? Int {
             highScore = hs
@@ -86,6 +87,8 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         //- .static so that it is not affected by gravity and is fixed to that location.
         let physicsShape = SCNPhysicsShape(node: backboardNode, options: [SCNPhysicsShape.Option.type: SCNPhysicsShape.ShapeType.concavePolyhedron])
         let physicsBody = SCNPhysicsBody(type: .static, shape: physicsShape)
+        
+        // associate it to it's BodyType (enum value)
         physicsBody.categoryBitMask = BodyType.backboard.rawValue
         
         backboardNode.physicsBody = physicsBody
@@ -104,11 +107,12 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
             return
         }
         hoop.position = SCNVector3(0, 0.63, -3.6)
-        hoop.geometry?.firstMaterial?.diffuse.contents = UIColor.blue //update to UIColor.clear later
+        hoop.geometry?.firstMaterial?.diffuse.contents = UIColor.clear //Use UIColor.blue to see and debug
         let hoopBody = SCNPhysicsBody(type: .static, shape: SCNPhysicsShape(node: hoop, options: [SCNPhysicsShape.Option.type: SCNPhysicsShape.ShapeType.concavePolyhedron]))
+        
         hoopBody.categoryBitMask = BodyType.hoop.rawValue
-        hoopBody.collisionBitMask = 0
-        hoopBody.contactTestBitMask = BodyType.ball.rawValue
+        hoopBody.collisionBitMask = 0 //This value is set to 0 so that any collisions with it do not lead to restitution (bouncing) and the ball can travel through this body
+        hoopBody.contactTestBitMask = BodyType.ball.rawValue //used to check collisions - also see ball below
     
         hoop.physicsBody = hoopBody
         sceneView.scene.rootNode.addChildNode(hoop)
@@ -142,8 +146,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         
         let physicsShape = SCNPhysicsShape(node: ballNode, options: nil)
         let physicsBody = SCNPhysicsBody(type: .dynamic, shape: physicsShape)
-//        physicsBody.categoryBitMask = BodyType.ball.rawValue
-//        physicsBody.collisionBitMask = 1
+        //test contact with hoop, together it will generate a trigger for collision detection
         physicsBody.contactTestBitMask = BodyType.hoop.rawValue
         
         ballNode.physicsBody = physicsBody
@@ -154,6 +157,8 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         
         sceneView.scene.rootNode.addChildNode(ballNode)
         
+        //After 3 seconds, check if the ball has achieved a goal (i.e. collision is set to true).
+        // NOTE/WARNING: This is not an ideal implementation because if two consecutive balls are launched and only one scores a basket, it is possible (because of the time gap) that two baskets are counted.
         DispatchQueue.main.asyncAfter(deadline: .now() + 3.0, execute: {
             self.checkGoals()
         })
@@ -161,6 +166,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     }
     
     func checkGoals(){
+        //Checks if a point is scored. See warning at the function call -- this is not a good implementation of counting the score
         if(goal){
             goalCount = goalCount+1
             basketsLabel.text = String(goalCount)
@@ -172,10 +178,8 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     }
     
     func physicsWorld(_ world: SCNPhysicsWorld, didEnd contact: SCNPhysicsContact) {
-        //if((contact.nodeA.physicsBody?.categoryBitMask == BodyType.hoop.rawValue && contact.nodeB.physicsBody?.categoryBitMask == BodyType.ball.rawValue) || (contact.nodeB.physicsBody?.categoryBitMask == BodyType.hoop.rawValue && contact.nodeA.physicsBody?.categoryBitMask == BodyType.ball.rawValue)){
-                goal = true
-                print(goalCount)
-       // }
+        //check collision between ball and goalHoop. This resuts in setting the goal parameter to true.
+        goal = true
     }
     
 
